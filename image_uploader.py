@@ -1,11 +1,11 @@
 import streamlit as st
 import os
 import requests
-
+import openai 
 
 API_URL = "https://api-inference.huggingface.co/models/Salesforce/blip-image-captioning-large"
 HEADERS = {"Authorization": "Bearer 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"}
-
+openai.OpenAI(api_key="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")
 
 
 def query_caption(filename):
@@ -45,6 +45,22 @@ def main():
     st.header("Image Captions:")
     for i, caption in enumerate(captions):
         st.write(f"Image {i + 1}: {caption}")
+
+    st.header("The Story:")
+    prompt = "tell me a story aout makkah city and add this event"+captions+"then translated into arabic"
+    # After each call, append the prompt and response to 'messages' to keep track of the conversation
+    messages = [
+        {"role": "system", "content": "You are a helpful assistant."},
+        {"role": "user", "content": "Hello!"},
+        {"role": "assistant", "content": "Hi!"},
+        {"role": "user", "content": prompt}
+    ]
+
+    completion = openai.chat.completions.create(
+        model="gpt-3.5-turbo",
+        messages=messages
+    )  
+    st.write(completion.choices[0].message.content)
 
 if __name__ == "__main__":
     main()
